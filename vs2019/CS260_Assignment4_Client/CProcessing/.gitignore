@@ -1,0 +1,6 @@
+*.swp
+!lib/x86/*.lib
+!lib/x86/*.dll
+!lib/x64/*.lib
+!lib/x64/*.dll
+
