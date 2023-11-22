@@ -67,8 +67,31 @@ void LockstepHostingState_Init()
 	}
 	
 	//TODO: set the socket as non-blocking
-	
+	u_long nonblocking = 1;
+	auto res = ioctlsocket(hosting_socket, FIONBIO, &nonblocking);
+	if ((res == SOCKET_ERROR) &&
+		LockstepHostingState_HandleSocketError("Error setting non-blocking state on lockstep hosting socket: "))
+	{
+		return;
+	}
+
 	//TODO: bind the hosting socket to the specified port on the local machine (127.0.0.1)
+	SOCKADDR_IN hosting_address;
+	memset(&hosting_address, 0, sizeof(hosting_address));
+	hosting_address.sin_family = AF_INET;
+	hosting_address.sin_port = htons(hosting_port);
+	res = inet_pton(AF_INET, "127.0.0.1", &hosting_address.sin_addr);
+	if ((res == SOCKET_ERROR) &&
+		LockstepHostingState_HandleSocketError("Error creating a localhost address for the lockstep hosting socket: "))
+	{
+		return;
+	}
+	res = bind(hosting_socket, reinterpret_cast<SOCKADDR*>(&hosting_address), sizeof(hosting_address));
+	if ((res == SOCKET_ERROR) &&
+		LockstepHostingState_HandleSocketError("Error binding lockstep hosting socket: "))
+	{
+		return;
+	}
 
 	std::cout << "Hosting a game server on port " << hosting_port << std::endl;
 }
@@ -89,8 +112,17 @@ void LockstepHostingState_Update()
 
 	//TODO: attempt to receive a message from a connecting client
 	// -- note that this must be recvfrom, since we don't know the identity of the other machine...
-	int res = 0; // replace "0" with recfrom...
-	 
+	//int res = 0; // replace "0" with recfrom...
+	SOCKADDR_IN other_address;
+	int other_address_size = sizeof(other_address);
+	char buffer[100];
+	auto res = recvfrom(hosting_socket, buffer, 100, 0, reinterpret_cast<SOCKADDR*>(&other_address),
+	                    &other_address_size);
+	if ((res == SOCKET_ERROR) &&
+		LockstepHostingState_HandleSocketError("Error receiving lockstep hosting socket: "))
+	{
+		return;
+	}		
 	// if any bytes are received (don't bother to parse):
 	if (res > 0)
 	{
@@ -98,9 +130,19 @@ void LockstepHostingState_Update()
 		
 		//TODO: set the hosting socket to reference the address the message was received from
 		// -- the same API we used in LockstepConnectingState - the one that lets us use send/recv with a UDP socket...
-
+		res = connect(hosting_socket, reinterpret_cast<SOCKADDR*>(&other_address), sizeof(other_address));
+		if ((res == SOCKET_ERROR) &&
+			LockstepHostingState_HandleSocketError("Error 'connecting' lockstep hosting socket: "))
+		{
+			return;
+		}
 		//TODO: send an acknowledgement message, "LetUsBegin"
-		
+		res = send(hosting_socket, "LetUsBegin", 10, 0);
+		if ((res == SOCKET_ERROR) &&
+			LockstepHostingState_HandleSocketError("Error sending 'LetUsBegin' on lockstep hosting socket: "))
+		{
+			return;
+		}
 		// -- move on to lockstep gameplay, using the hosting socket, in host mode
 		std::cout << "Successfully hosting a game on port " << hosting_port << " with another user, moving on to gameplay..." << std::endl;
 		PlayGame(new LockstepGame(hosting_socket, true));

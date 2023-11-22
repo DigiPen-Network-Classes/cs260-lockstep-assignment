@@ -44,7 +44,13 @@ int main(void)
 
 	//TODO: initialize winsock
 	// -- if it fails, output to cerr and return 1
-
+	WSADATA wsa_data;
+	const auto res = WSAStartup(MAKEWORD(2, 2), &wsa_data);
+	if (res != 0)
+	{
+		std::cerr << "Error in WSAStartup: " << WSAGetLastError() << std::endl;
+		return 1;
+	}
 
 	// establish the initial window settings
 	CP_System_SetWindowTitle("CS 260 Assignment 4");

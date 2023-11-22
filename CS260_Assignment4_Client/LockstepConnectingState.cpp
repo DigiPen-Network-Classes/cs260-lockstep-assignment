@@ -80,11 +80,40 @@ void LockstepConnectingState_Init()
 	}
 
 	//TODO: make the socket non-blocking
+	u_long nonblocking = 1;
+	auto res = ioctlsocket(connecting_socket, FIONBIO, &nonblocking);
+	if ((res == SOCKET_ERROR) &&
+		LockstepConnectingState_HandleSocketError("Error setting non-blocking state on lockstep connection socket: "))
+	{
+		return;
+	}
 
 	//TODO: set the UDP socket to reference the specified port on the local machine (127.0.0.1)
-	// -- which API lets you later use send/recv on a UDP socket?
+	// -- which API lets you later use send/recv on a UDP socket?	
+	SOCKADDR_IN connecting_address;
+	memset(&connecting_address, 0, sizeof(connecting_address));
+	connecting_address.sin_family = AF_INET;
+	connecting_address.sin_port = htons(connecting_port);
+	res = inet_pton(AF_INET, "127.0.0.1", &connecting_address.sin_addr);
+	if ((res == SOCKET_ERROR) &&
+		LockstepConnectingState_HandleSocketError("Error creating a localhost address for the lockstep connecting socket to connect to: "))
+	{
+		return;
+	}
+	res = connect(connecting_socket, reinterpret_cast<SOCKADDR*>(&connecting_address), sizeof(connecting_address));
+	if ((res == SOCKET_ERROR) &&
+		LockstepConnectingState_HandleSocketError("Error 'connecting' lockstep connection socket: "))
+	{
+		return;
+	}
 
 	//TODO: send a buffer containing the word "Lockstep" to the server
+	res = send(connecting_socket, "Lockstep", 8, 0);
+	if ((res == SOCKET_ERROR) &&
+		LockstepConnectingState_HandleSocketError("Error sending 'Lockstep' on lockstep connection socket: "))
+	{
+		return;
+	}
 
 	std::cout << "Attempting to connect to a game server on port " << connecting_port << std::endl;
 }
@@ -115,8 +144,14 @@ void LockstepConnectingState_Update()
 	}
 
 	//TODO: attempt to receive a response from a hosting server
-	int res = 0; // replace "0" with the recv call...
-
+	//int res = 0; // replace "0" with the recv call...
+	char buffer[100];
+	const auto res = recv(connecting_socket, buffer, 100, 0);
+	if ((res == SOCKET_ERROR) &&
+		LockstepConnectingState_HandleSocketError("Error receiving on lockstep connection socket: "))
+	{
+		return;
+	}
 	// if any bytes are received (don't bother to parse), then assume we're ready to play, and transition to PlayGame, re-using the socket, as non-host
 	if (res > 0)
 	{
