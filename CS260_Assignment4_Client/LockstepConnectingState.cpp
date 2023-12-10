@@ -100,6 +100,8 @@ void LockstepConnectingState_Init()
 	{
 		return;
 	}
+
+	std::cout << "Attempting to connect to a game server on port " << connecting_port << std::endl;
 	res = connect(connecting_socket, reinterpret_cast<SOCKADDR*>(&connecting_address), sizeof(connecting_address));
 	if ((res == SOCKET_ERROR) &&
 		LockstepConnectingState_HandleSocketError("Error 'connecting' lockstep connection socket: "))
@@ -114,8 +116,6 @@ void LockstepConnectingState_Init()
 	{
 		return;
 	}
-
-	std::cout << "Attempting to connect to a game server on port " << connecting_port << std::endl;
 }
 
 /// <summary>
