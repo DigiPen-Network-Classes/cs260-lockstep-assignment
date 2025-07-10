@@ -87,9 +87,9 @@ void LockstepHostingState_Update()
 		return;
 	}
 
-	//TODO: attempt to receive a message from a connecting client
-	// -- note that this must be recvfrom, since we don't know the identity of the other machine...
-	int res = 0; // replace "0" with recfrom...
+	//TODO: attempt to receive a message from a connecting client, using recvfrom
+	// -- note that this must be recvfrom, since we don't (yet) know the identity of the other machine...
+	int res = 0; // replace "0" with recvfrom...
 	 
 	// if any bytes are received (don't bother to parse):
 	if (res > 0)
@@ -98,6 +98,7 @@ void LockstepHostingState_Update()
 		
 		//TODO: set the hosting socket to reference the address the message was received from
 		// -- the same API we used in LockstepConnectingState - the one that lets us use send/recv with a UDP socket...
+		// We can use connect() even though we're using UDP. That makes using send() and recv() instead of sendto and recvfrom
 
 		//TODO: send an acknowledgement message, "LetUsBegin"
 		

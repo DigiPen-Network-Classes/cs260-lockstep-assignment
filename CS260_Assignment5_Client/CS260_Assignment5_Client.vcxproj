@@ -22,7 +22,7 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{c6c98435-2c8c-450f-83cc-88e2c88d963b}</ProjectGuid>
-    <RootNamespace>CS260Assignment4Client</RootNamespace>
+    <RootNamespace>CS260Assignment5Client</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -180,7 +180,7 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Board.cpp" />
-    <ClCompile Include="CS260_Assignment4_Client.cpp" />
+    <ClCompile Include="CS260_Assignment5_Client.cpp" />
     <ClCompile Include="BoardGame.cpp" />
     <ClCompile Include="LockstepConfiguringState.cpp" />
     <ClCompile Include="LockstepConnectingState.cpp" />

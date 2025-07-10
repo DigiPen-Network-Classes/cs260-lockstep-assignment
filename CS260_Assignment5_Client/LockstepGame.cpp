@@ -183,7 +183,7 @@ size_t LockstepGame::SerializeLocalState() const
 {
 	//TODO: serialize the turn number, identifying this move
 
-	//TODO: serialize the uncommitted position of the local player
+	//TODO: serialize the uncommitted board position of the local player
 
 	return sizeof(turn_number_) + sizeof(local_player_.current_position);
 }
