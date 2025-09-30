@@ -22,7 +22,7 @@ is WSANOTINITIALISED, which means that WSAStartup was not yet called!
 
 Search the solution code for "TODO".  You will find them in:
 
-*	CS260_Assignment4_Client.cpp
+*	CS260_Assignment5_Client.cpp
 *	LockstepConnectingState.cpp
 *	LockstepHostingState.cpp
 *	LockstepGame.cpp
@@ -31,3 +31,8 @@ Your primary task is to implement each of these TODO sections, in place,
 without disturbing the rest of the code. As you do so, remove the word 
 TODO from each comment, and leave the rest of the comment in place. 
 You may replace "TODO" with some variant of "TODONE" if you wish.
+
+## History
+
+This used to be Assignment 4 of CS 260, but is now the 5th assignment. So 
+if you see notes referring to "Assignment 4", now you know why.
